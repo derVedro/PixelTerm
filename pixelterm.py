@@ -31,6 +31,9 @@ class PixelTerm:
         # 按键序列缓冲区
         self.key_buffer = ""
         
+        # 图片加载状态标志
+        self.is_loading = False
+        
         # 设置初始路径
         if path:
             path_obj = Path(path)
@@ -96,7 +99,7 @@ class PixelTerm:
                 
                 # 直接读取按键，不使用select检测
                 key = self.interface.get_key()
-                if key:
+                if key and not self.is_loading:
                     # 将按键添加到缓冲区
                     self.key_buffer += key
                     
@@ -122,28 +125,32 @@ class PixelTerm:
     
     def refresh_display(self, clear_first: bool = True):
         """刷新显示"""
-        current_image = self.file_browser.get_current_image()
-        if current_image:
-            # 显示图片
-            self.image_viewer.display_image_with_info(
-                str(current_image), 
-                self.display_options.get_scale(),
-                clear_first
-            )
-        else:
-            if clear_first:
-                self.interface.clear_screen()
-            print("No images found")
+        self.is_loading = True
+        try:
+            current_image = self.file_browser.get_current_image()
+            if current_image:
+                # 显示图片
+                self.image_viewer.display_image_with_info(
+                    str(current_image), 
+                    self.display_options.get_scale(),
+                    clear_first
+                )
+            else:
+                if clear_first:
+                    self.interface.clear_screen()
+                print("No images found")
+        finally:
+            self.is_loading = False
     
     def next_image(self):
         """下一张图片"""
-        if self.file_browser.next_image():
+        if not self.is_loading and self.file_browser.next_image():
             self.refresh_display(clear_first=True)
         return True
     
     def previous_image(self):
         """上一张图片"""
-        if self.file_browser.previous_image():
+        if not self.is_loading and self.file_browser.previous_image():
             self.refresh_display(clear_first=True)
         return True
     
