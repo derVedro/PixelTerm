@@ -111,11 +111,8 @@ class PixelTerm:
                         self.key_buffer = ""
                     elif not self.key_buffer.startswith('\x1b'):
                         # 如果不是ESC序列开头，直接处理单个字符
-                        self.input_handler.handle_handler(key)
+                        self.input_handler.handle_input(key)
                         self.key_buffer = ""
-                        # 如果是字母数字键，可能需要特殊处理
-                        if len(key) == 1 and key.isalnum():
-                            self.handle_directory_selection(key)
         
         finally:
             self.interface.restore_terminal()
