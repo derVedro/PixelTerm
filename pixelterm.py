@@ -138,19 +138,13 @@ class PixelTerm:
                 self.file_browser
             )
             
-            # 显示预加载状态
-            self.show_preload_status()
+            
         else:
             if clear_first:
                 self.interface.clear_screen()
             print("No images found")
     
-    def show_preload_status(self):
-        """显示预加载状态"""
-        term_width, _ = self.image_viewer.get_terminal_size()
-        preload_status = "🚀预加载" if self.file_browser.get_preload_status() else "🐌无预加载"
-        # 在右上角显示状态
-        print(f"\033[1;{term_width - len(preload_status)}H\033[K{preload_status}\033[H", end='', flush=True)
+    
     
     def next_image(self):
         """下一张图片"""
