@@ -66,9 +66,9 @@ class ImageViewer:
                 '--color-space', 'rgb',
                 '--dither', 'none',
                 '--relative', 'off',     # 关闭相对定位，避免残留
-                '--optimize', '9',       # 启用所有优化
+                '--optimize', '1',       # 降低优化级别以提高响应速度
                 '--margin-right', '0',   # 右边距设为0
-                '--work', '9',           # 最高质量处理
+                '--work', '1',           # 降低处理级别以提高响应速度
                 filepath
             ]
             

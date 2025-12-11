@@ -113,6 +113,9 @@ class PixelTerm:
                         # 如果不是ESC序列开头，直接处理单个字符
                         self.input_handler.handle_input(key)
                         self.key_buffer = ""
+                    elif len(self.key_buffer) >= 3 and not self.input_handler.handle_input(self.key_buffer):
+                        # 如果是ESC序列且长度>=3但未被处理，可能是无效序列，清空
+                        self.key_buffer = ""
         
         finally:
             self.interface.restore_terminal()
