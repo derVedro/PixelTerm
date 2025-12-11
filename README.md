@@ -17,6 +17,7 @@
 ### 安装依赖
 
 ```bash
+# 1. 安装系统chafa库 (必须)
 # Arch Linux
 sudo pacman -S chafa
 
@@ -26,9 +27,13 @@ sudo apt-get install chafa
 # macOS
 brew install chafa
 
-# 安装Python依赖
+# 2. 安装Python依赖
 pip install -r requirements.txt
 ```
+
+**依赖说明**:
+- **系统chafa**: 必须先安装系统的chafa库，这是核心依赖
+- **Python依赖**: 通过requirements.txt安装Pillow和chafa.py等Python包
 
 ### 基本使用
 
