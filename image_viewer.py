@@ -8,6 +8,7 @@ import os
 import subprocess
 import sys
 from typing import Optional, Tuple
+from pathlib import Path
 from PIL import Image
 
 
@@ -54,9 +55,20 @@ class ImageViewer:
         except Exception:
             return None
     
-    def display_image(self, filepath: str, scale: float = 1.0) -> bool:
+    def display_image(self, filepath: str, scale: float = 1.0, file_browser=None) -> bool:
         """使用chafa显示图片"""
         try:
+            # 尝试使用预渲染的数据
+            rendered_output = None
+            if file_browser:
+                rendered_output = file_browser.get_rendered_image(Path(filepath))
+            
+            if rendered_output:
+                # 使用预渲染的数据，直接输出
+                print(rendered_output, end='')
+                return True
+            
+            # 如果没有预渲染数据，使用chafa实时渲染
             # 获取最优显示尺寸
             display_width, display_height = self.get_optimal_chafa_size(scale)
             
@@ -99,7 +111,7 @@ class ImageViewer:
         # 立即刷新输出，确保清屏命令立即生效
         sys.stdout.flush()
     
-    def display_image_with_info(self, filepath: str, scale: float = 1.0, clear_first: bool = True) -> bool:
+    def display_image_with_info(self, filepath: str, scale: float = 1.0, clear_first: bool = True, file_browser=None) -> bool:
         """显示图片"""
         if clear_first:
             # 清除显示区域
@@ -107,7 +119,7 @@ class ImageViewer:
         print('\033[?25l', end='')  # 隐藏光标
         
         # 显示图片
-        result = self.display_image(filepath, scale)
+        result = self.display_image(filepath, scale, file_browser)
         
         # 显示结束后显示光标
         print('\033[?25h', end='', flush=True)  # 显示光标

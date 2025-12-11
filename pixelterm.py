@@ -20,7 +20,7 @@ from config import Config, DisplayOptions
 class PixelTerm:
     """主应用程序类"""
     
-    def __init__(self, path: str = None):
+    def __init__(self, path: str = None, preload_enabled: bool = True):
         self.config = Config()
         self.display_options = DisplayOptions(self.config)
         self.interface = Interface()
@@ -30,6 +30,9 @@ class PixelTerm:
         
         # 按键序列缓冲区
         self.key_buffer = ""
+        
+        # 设置预加载状态
+        self.file_browser.preload_enabled = preload_enabled
         
         # 设置初始路径
         if path:
@@ -70,6 +73,9 @@ class PixelTerm:
         # 备用按键
         self.input_handler.register_handler('a', self.previous_image)  # a键代替左箭头
         self.input_handler.register_handler('d', self.next_image)     # d键代替右箭头
+        
+        # 信息显示
+        self.input_handler.register_handler('i', self.show_image_info)
     
     def signal_handler(self, signum, frame):
         """信号处理器"""
@@ -124,16 +130,27 @@ class PixelTerm:
         """刷新显示"""
         current_image = self.file_browser.get_current_image()
         if current_image:
-            # 显示图片
+            # 显示图片，传递file_browser以支持预渲染
             self.image_viewer.display_image_with_info(
                 str(current_image), 
                 self.display_options.get_scale(),
-                clear_first
+                clear_first,
+                self.file_browser
             )
+            
+            # 显示预加载状态
+            self.show_preload_status()
         else:
             if clear_first:
                 self.interface.clear_screen()
             print("No images found")
+    
+    def show_preload_status(self):
+        """显示预加载状态"""
+        term_width, _ = self.image_viewer.get_terminal_size()
+        preload_status = "🚀预加载" if self.file_browser.get_preload_status() else "🐌无预加载"
+        # 在右上角显示状态
+        print(f"\033[1;{term_width - len(preload_status)}H\033[K{preload_status}\033[H", end='', flush=True)
     
     def next_image(self):
         """下一张图片"""
@@ -146,6 +163,8 @@ class PixelTerm:
         if self.file_browser.previous_image():
             self.refresh_display(clear_first=True)
         return True
+    
+    
     
     def zoom_in(self):
         """放大"""
@@ -173,6 +192,13 @@ class PixelTerm:
         """显示帮助"""
         self.interface.show_help()
         self.refresh_display()
+        return True
+    
+    def show_image_info(self):
+        """显示图片信息"""
+        current_image = self.file_browser.get_current_image()
+        if current_image:
+            self.interface.show_image_info(current_image, self.file_browser.get_image_count(), self.file_browser.current_index)
         return True
     
     def go_up_directory(self):
@@ -236,7 +262,33 @@ class PixelTerm:
 
 def main():
     """主函数"""
-    path = sys.argv[1] if len(sys.argv) > 1 else '.'
+    import argparse
+    
+    parser = argparse.ArgumentParser(
+        description='PixelTerm - 终端图片浏览器',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用示例:
+  %(prog)s                    # 浏览当前目录的图片
+  %(prog)s /path/to/images    # 浏览指定目录的图片
+  %(prog)s image.jpg          # 直接显示指定图片
+  %(prog)s --no-preload       # 禁用预加载以提高启动速度
+  %(prog)s --help             # 显示帮助信息
+
+快捷键:
+  ←/→     上一张/下一张图片
+  a/d      备用左/右键
+  i        显示图片详细信息
+  q        退出程序
+  Ctrl+C   强制退出
+        """
+    )
+    
+    parser.add_argument('path', nargs='?', help='图片文件或目录路径')
+    parser.add_argument('--no-preload', action='store_false', dest='preload_enabled', 
+                        help='禁用预加载功能（默认启用）')
+    
+    args = parser.parse_args()
     
     # 检查chafa是否可用
     import subprocess
@@ -248,7 +300,8 @@ def main():
         sys.exit(1)
     
     # 启动应用
-    app = PixelTerm(path)
+    path = args.path if args.path else '.'
+    app = PixelTerm(path, preload_enabled=args.preload_enabled)
     app.run()
 
 

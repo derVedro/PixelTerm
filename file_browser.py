@@ -18,6 +18,11 @@ class FileBrowser:
         self.image_files: List[Path] = []
         self.current_index = 0
         self.supported_formats = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff'}
+        
+        # chafa预渲染缓存
+        self.render_cache: Dict[Path, str] = {}
+        self.preload_size = 10  # 预加载前后各10张图片
+        self.preload_enabled = True  # 预加载开关
     
     def set_directory(self, directory: str) -> bool:
         """设置当前目录"""
@@ -82,6 +87,7 @@ class FileBrowser:
     def refresh_file_list(self):
         """刷新当前目录的图片文件列表"""
         self.image_files.clear()
+        self.render_cache.clear()  # 清空预渲染缓存
         
         try:
             for item in self.current_directory.iterdir():
@@ -92,8 +98,66 @@ class FileBrowser:
             self.image_files.sort()
             self.current_index = 0
             
+            # 开始预渲染
+            self.preload_renders()
+            
         except Exception as e:
             print(f"读取目录时出错: {e}")
+    
+    def preload_renders(self):
+        """预渲染图片"""
+        if not self.image_files or not self.preload_enabled:
+            return
+        
+        import threading
+        import subprocess
+        import time
+        
+        def render_worker():
+            """预渲染工作线程"""
+            try:
+                # 预渲染当前图片前后各几张
+                start_idx = max(0, self.current_index - self.preload_size)
+                end_idx = min(len(self.image_files), self.current_index + self.preload_size + 1)
+                
+                for i in range(start_idx, end_idx):
+                    if i != self.current_index:  # 跳过当前图片
+                        img_path = self.image_files[i]
+                        if img_path not in self.render_cache:
+                            try:
+                                # 使用chafa预渲染
+                                cmd = [
+                                    'chafa',
+                                    '--color-space', 'rgb',
+                                    '--dither', 'none',
+                                    '--relative', 'off',
+                                    '--optimize', '9',
+                                    '--margin-right', '0',
+                                    '--work', '9',
+                                    str(img_path)
+                                ]
+                                
+                                result = subprocess.run(cmd, capture_output=True, text=True)
+                                if result.returncode == 0:
+                                    self.render_cache[img_path] = result.stdout
+                                
+                                time.sleep(0.05)  # 避免占用过多CPU
+                            except Exception:
+                                pass  # 忽略渲染失败的图片
+            except Exception:
+                pass  # 忽略预渲染错误
+        
+        # 启动预渲染线程
+        render_thread = threading.Thread(target=render_worker, daemon=True)
+        render_thread.start()
+    
+    def get_preload_status(self):
+        """获取预加载状态"""
+        return self.preload_enabled
+    
+    def get_rendered_image(self, img_path: Path) -> Optional[str]:
+        """获取预渲染的图片数据"""
+        return self.render_cache.get(img_path)
     
     def is_image_file(self, filepath: Path) -> bool:
         """检查是否为支持的图片格式"""
@@ -115,6 +179,8 @@ class FileBrowser:
             return False
         
         self.current_index = (self.current_index + 1) % len(self.image_files)
+        # 触发预渲染
+        self.preload_renders()
         return True
     
     def previous_image(self) -> bool:
@@ -123,6 +189,8 @@ class FileBrowser:
             return False
         
         self.current_index = (self.current_index - 1) % len(self.image_files)
+        # 触发预渲染
+        self.preload_renders()
         return True
     
     def jump_to_image(self, index: int) -> bool:
