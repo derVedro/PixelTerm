@@ -1,5 +1,7 @@
 # PixelTerm - 终端图片浏览器
 
+*English | [中文](README_zh.md)*
+
 一个基于chafa的现代化终端图片浏览器，支持在终端中浏览和查看图片。
 
 ## 🌟 功能特性
@@ -123,7 +125,3 @@ MIT License - 详见 LICENSE 文件
 ---
 
 **PixelTerm** - 让终端也能成为出色的图片浏览器！ 🖼️
-
----
-
-*English | [中文](README_zh.md)*

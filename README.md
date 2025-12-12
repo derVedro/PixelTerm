@@ -1,5 +1,7 @@
 # PixelTerm - Terminal Image Viewer
 
+*English | [中文](README_zh.md)*
+
 A modern terminal image viewer based on chafa, allowing you to browse and view images directly in your terminal.
 
 ## 🌟 Features
@@ -123,7 +125,3 @@ MIT License - See LICENSE file for details
 ---
 
 **PixelTerm** - Making terminals excellent image viewers! 🖼️
-
----
-
-*English | [中文](README_zh.md)*
