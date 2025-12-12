@@ -22,18 +22,10 @@ class Interface:
 
 📋 快捷键:
   ←/→     Previous/Next image
-  ↑/↓     Select file
-  Enter   Open selected file
-  +/-     Zoom in/out
-  r       Reset zoom
-  h/?     Show help
-  q       Quit
-  u       Go up directory
-  d       Show directory list
-  
-📁 Directory Navigation:
-  Use d to view subdirectories, then enter directory name
-  Use u to go up to parent directory
+  a/d     Alternative left/right keys
+  i       Show detailed image information
+  q       Quit program
+  Ctrl+C  Force exit
         """
     
     def setup_terminal(self):
