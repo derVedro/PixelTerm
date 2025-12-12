@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-PixelTerm 常量定义
+PixelTerm Constants Definition
 """
 
-# 支持的图片格式
+# Supported image formats
 SUPPORTED_FORMATS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff'}
 
-# 预加载配置
+# Preload configuration
 DEFAULT_PRELOAD_SIZE = 10
 PRELOAD_SLEEP_TIME = 0.05
 
-# Chafa命令配置
+# Chafa command configuration
 CHAFA_CMD = 'chafa'
 DEFAULT_CHAFA_ARGS = [
     '--color-space', 'rgb',
@@ -21,20 +21,20 @@ DEFAULT_CHAFA_ARGS = [
     '--work', '9'
 ]
 
-# 显示配置
+# Display configuration
 DEFAULT_SCALE = 1.0
 SCALE_STEP = 0.1
 MIN_SCALE = 0.1
 MAX_SCALE = 3.0
 
-# 键盘控制
+# Keyboard controls
 KEY_LEFT = '\x1b[D'
 KEY_RIGHT = '\x1b[C'
 KEY_LEFT_ALT = '\x1bOD'
 KEY_RIGHT_ALT = '\x1bOC'
 KEY_CTRL_C = '\x03'
 
-# 错误消息
+# Error messages
 ERR_CHAFA_NOT_FOUND = "Error: chafa command not found"
 ERR_CHAFA_INSTALL_HINT = "Please install chafa: brew install chafa (macOS) or sudo apt-get install chafa (Ubuntu)"
 ERR_PATH_NOT_EXISTS = "Error: Path does not exist"

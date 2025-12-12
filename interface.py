@@ -18,9 +18,9 @@ class Interface:
     def __init__(self):
         self.old_settings = None
         self.help_text = """
-🖼️  PixelTerm - 终端图片浏览器
+🖼️  PixelTerm - Terminal Image Viewer
 
-📋 快捷键:
+📋 Shortcuts:
   ←/→     Previous/Next image
   a/d     Alternative left/right keys
   i       Show/hide image information
@@ -30,12 +30,12 @@ class Interface:
         """
     
     def setup_terminal(self):
-        """设置终端为原始模式"""
+        """Setup terminal in raw mode"""
         try:
             self.old_settings = termios.tcgetattr(sys.stdin)
             tty.setraw(sys.stdin.fileno())
         except:
-            # 如果无法设置终端模式，使用普通输入
+            # If unable to setup terminal mode, use normal input
             pass
     
     def restore_terminal(self):
@@ -46,9 +46,7 @@ class Interface:
             except:
                 pass
     
-    def clear_screen(self):
-        """清屏"""
-        os.system('clear' if os.name == 'posix' else 'cls')
+    
     
     def get_key(self) -> Optional[str]:
         """获取键盘输入"""
@@ -64,25 +62,11 @@ class Interface:
     
     
     
-    def wait_for_key(self):
-        """等待按键"""
-        if self.old_settings:
-            self.get_key()
-        else:
-            input()
     
-    def show_status_bar(self, current: int, total: int, scale: float, directory: str):
-        """显示状态栏"""
-        print(f"\n{'='*60}")
-        print(f"📁 {directory}")
-        print(f"🖼️  {current+1}/{total} | 🔍 {scale:.1f}x | Press h for help")
-        print(f"{'='*60}")
     
-    def show_file_list(self, files: list, current_index: int):
-        """显示文件列表"""
-        print("\n📋 File list:")
-        for i, file_info in enumerate(files):
-            print(file_info)
+    
+    
+    
     
     @contextmanager
     def _terminal_mode_switch(self):
@@ -101,7 +85,7 @@ class Interface:
                     self.old_settings = None
     
     def show_image_info(self, image_path, total_count: int, current_index: int):
-        """显示图片详细信息"""
+        """Show detailed image information"""
         import os
         from PIL import Image
         
@@ -116,7 +100,7 @@ class Interface:
                 print(f"📂 Path: {image_path.parent}")
                 print(f"📄 Index: {current_index + 1}/{total_count}")
                 
-                # 文件大小
+                # File size
                 file_size = os.path.getsize(image_path)
                 if file_size < 1024:
                     size_str = f"{file_size} B"
@@ -155,7 +139,7 @@ class Interface:
                 print(f"\n❌ Error displaying information: {e}")
     
     def show_directory_list(self, directories: list):
-        """显示目录列表"""
+        """Show directory list"""
         if not directories:
             print("\n📁 No subdirectories in current directory")
             return
@@ -166,7 +150,7 @@ class Interface:
         print("\nEnter directory name to enter, or press Esc to cancel:")
     
     def prompt_directory(self) -> Optional[str]:
-        """提示输入目录名"""
+        """Prompt for directory name"""
         with self._terminal_mode_switch():
             try:
                 dirname = input("Enter directory name: ").strip()
@@ -174,17 +158,10 @@ class Interface:
             except:
                 return None
     
-    def confirm_exit(self) -> bool:
-        """确认退出"""
-        with self._terminal_mode_switch():
-            try:
-                response = input("\nAre you sure you want to exit? (y/N): ").strip().lower()
-                return response == 'y' or response == 'yes'
-            except:
-                return False
+    
     
     def show_error(self, message: str):
-        """显示错误信息"""
+        """Show error message"""
         with self._terminal_mode_switch():
             try:
                 print(f"\n❌ Error: {message}")
@@ -193,7 +170,7 @@ class Interface:
                 pass
     
     def show_info(self, message: str):
-        """显示信息"""
+        """Show info message"""
         with self._terminal_mode_switch():
             try:
                 print(f"\nℹ️  {message}")

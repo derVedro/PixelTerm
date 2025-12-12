@@ -34,7 +34,7 @@ class PixelTerm:
         # 按键序列缓冲区
         self.key_buffer = ""
         
-        # 信息显示状态
+        # Info display state
         self.info_displayed = False
         
         # 设置预加载状态
@@ -66,74 +66,74 @@ class PixelTerm:
         signal.signal(signal.SIGINT, self.signal_handler)
     
     def setup_key_handlers(self):
-        """设置键盘事件处理器"""
+        """Setup keyboard event handlers"""
         self.input_handler.register_handler('q', self.quit)
         self.input_handler.register_handler(KEY_CTRL_C, self.quit)  # Ctrl+C
         
-        # 导航键
+        # Navigation keys
         self.input_handler.register_handler(KEY_LEFT, self.previous_image)  # 左箭头
         self.input_handler.register_handler(KEY_RIGHT, self.next_image)     # 右箭头
-        self.input_handler.register_handler(KEY_LEFT_ALT, self.previous_image) # 左箭头 (某些终端)
-        self.input_handler.register_handler(KEY_RIGHT_ALT, self.next_image)    # 右箭头 (某些终端)
+        self.input_handler.register_handler(KEY_LEFT_ALT, self.previous_image) # Left arrow (some terminals)
+        self.input_handler.register_handler(KEY_RIGHT_ALT, self.next_image)    # Right arrow (some terminals)
         
-        # 备用按键
-        self.input_handler.register_handler('a', self.previous_image)  # a键代替左箭头
-        self.input_handler.register_handler('d', self.next_image)     # d键代替右箭头
+        # Alternative keys
+        self.input_handler.register_handler('a', self.previous_image)  # a key as left arrow
+        self.input_handler.register_handler('d', self.next_image)     # d key as right arrow
         
-        # 信息显示
+        # Information display
         self.input_handler.register_handler('i', self.show_image_info)
         
-        # 删除图片
+        # Delete image
         self.input_handler.register_handler('r', self.delete_current_image)
     
     def signal_handler(self, signum, frame):
-        """信号处理器"""
-        # 强制退出，跳过确认
+        """Signal handler"""
+        # Force exit, skip confirmation
         self.input_handler.stop()
     
     def run(self):
-        """运行主循环"""
-        # 检查是否有图片，如果没有就不设置终端模式
+        """Run main loop"""
+        # Check if there are images, if not, don't setup terminal mode
         has_images = self.file_browser.get_current_image() is not None
         
         if has_images:
             self.interface.setup_terminal()
         
-        # 记录上次的终端大小
+        # Remember last terminal size
         last_term_size = self.image_viewer.get_terminal_size()
         
         try:
             self.refresh_display()
             
             while self.input_handler.running and has_images:
-                # 检查终端大小是否改变
+                # Check if terminal size has changed
                 current_term_size = self.image_viewer.get_terminal_size()
                 if current_term_size != last_term_size:
                     last_term_size = current_term_size
-                    # 终端大小改变，重新绘制
+                    # Terminal size changed, redraw
                     self.refresh_display(clear_first=True)
                 
-                # 直接读取按键，不使用select检测
+                # Read key directly, don't use select detection
                 key = self.interface.get_key()
                 if key:
-                    # 将按键添加到缓冲区
+                    # Add key to buffer
                     self.key_buffer += key
                     
-                    # 尝试处理缓冲区中的按键序列
+                    # Try to handle key sequence in buffer
                     handled = self.input_handler.handle_input(self.key_buffer)
                     
                     if handled:
-                        # 如果处理成功，清空缓冲区
+                        # If handled successfully, clear buffer
                         self.key_buffer = ""
                     elif len(self.key_buffer) > 10:
-                        # 如果缓冲区太长且没被处理，清空
+                        # If buffer is too long and not handled, clear it
                         self.key_buffer = ""
                     elif not self.key_buffer.startswith('\x1b'):
-                        # 如果不是ESC序列开头，直接处理单个字符
+                        # If not starting with ESC sequence, handle single character directly
                         self.input_handler.handle_input(key)
                         self.key_buffer = ""
                     elif len(self.key_buffer) >= 3 and not self.input_handler.handle_input(self.key_buffer):
-                        # 如果是ESC序列且长度>=3但未被处理，可能是无效序列，清空
+                        # If ESC sequence with length>=3 but not handled, might be invalid sequence, clear it
                         self.key_buffer = ""
         
         finally:
@@ -141,10 +141,10 @@ class PixelTerm:
                 self.interface.restore_terminal()
     
     def refresh_display(self, clear_first: bool = True):
-        """刷新显示"""
+        """Refresh display"""
         current_image = self.file_browser.get_current_image()
         if current_image:
-            # 显示图片，传递file_browser以支持预渲染
+            # Display image, pass file_browser to support pre-rendering
             self.image_viewer.display_image_with_info(
                 str(current_image), 
                 self.display_options.get_scale(),
@@ -156,7 +156,7 @@ class PixelTerm:
         else:
             print("No images found")
             print()
-            # 显示使用帮助并退出
+            # Show usage help and exit
             parser = argparse.ArgumentParser(
                 description='PixelTerm - Terminal Image Viewer',
                 formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -185,14 +185,14 @@ Shortcuts:
     
     
     def next_image(self):
-        """下一张图片"""
+        """Next image"""
         if self.file_browser.next_image():
-            self.info_displayed = False  # 重置信息显示状态
+            self.info_displayed = False  # Reset info display state
             self.refresh_display(clear_first=True)
         return True
     
     def previous_image(self):
-        """上一张图片"""
+        """Previous image"""
         if self.file_browser.previous_image():
             self.info_displayed = False  # 重置信息显示状态
             self.refresh_display(clear_first=True)
@@ -201,7 +201,7 @@ Shortcuts:
     
     
     def zoom_in(self):
-        """放大"""
+        """Zoom in"""
         if self.display_options.zoom_in():
             self.refresh_display()
         else:
@@ -209,7 +209,7 @@ Shortcuts:
         return True
     
     def zoom_out(self):
-        """缩小"""
+        """Zoom out"""
         if self.display_options.zoom_out():
             self.refresh_display()
         else:
@@ -217,7 +217,7 @@ Shortcuts:
         return True
     
     def reset_zoom(self):
-        """重置缩放"""
+        """Reset zoom"""
         self.display_options.reset_zoom()
         self.refresh_display()
         return True
@@ -225,71 +225,71 @@ Shortcuts:
     
     
     def show_image_info(self):
-        """显示/关闭图片信息"""
+        """Show/hide image information"""
         current_image = self.file_browser.get_current_image()
         if not current_image:
             return True
         
         if self.info_displayed:
-            # 如果信息已显示，关闭信息并重新渲染图片
+            # If info is displayed, hide info and re-render image
             self.info_displayed = False
             self.refresh_display(clear_first=True)
         else:
-            # 显示图片信息
+            # Show image information
             self.interface.show_image_info(current_image, self.file_browser.get_image_count(), self.file_browser.current_index)
             self.info_displayed = True
         
         return True
     
     def delete_current_image(self):
-        """删除当前图片并跳到下一张"""
+        """Delete current image and jump to next"""
         current_image = self.file_browser.get_current_image()
         if not current_image:
             return True
         
-        # 确认删除
+        # Confirm deletion
         with self.interface._terminal_mode_switch():
             try:
-                print(f"\n确定要删除图片 '{current_image.name}' 吗? (y/N): ", end='', flush=True)
+                print(f"\nAre you sure you want to delete image '{current_image.name}'? (y/N): ", end='', flush=True)
                 response = input().strip().lower()
                 if response != 'y' and response != 'yes':
                     return True
             except:
                 return True
         
-        # 删除文件
+        # Delete file
         try:
             import os
             os.remove(current_image)
             
-            # 从文件列表中移除
+            # Remove from file list
             self.file_browser.image_files.remove(current_image)
             
-            # 如果删除后没有图片了，退出
+            # If no more images after deletion, exit
             if not self.file_browser.image_files:
-                print("没有更多图片了")
+                print("No more images")
                 self.input_handler.stop()
                 return True
             
-            # 如果当前索引超出了范围，调整索引
+            # If current index is out of range, adjust index
             if self.file_browser.current_index >= len(self.file_browser.image_files):
                 self.file_browser.current_index = 0
             
-            # 刷新显示
+            # Refresh display
             self.refresh_display(clear_first=True)
             
         except Exception as e:
             with self.interface._terminal_mode_switch():
                 try:
-                    print(f"删除失败: {e}")
-                    input("按任意键继续...")
+                    print(f"Deletion failed: {e}")
+                    input("Press any key to continue...")
                 except:
                     pass
         
         return True
     
     def go_up_directory(self):
-        """返回上级目录"""
+        """Go up to parent directory"""
         if self.file_browser.go_up_directory():
             self.refresh_display()
         else:
@@ -297,7 +297,7 @@ Shortcuts:
         return True
     
     def show_directory_list(self):
-        """显示目录列表"""
+        """Show directory list"""
         subdirs = self.file_browser.get_subdirectories()
         if subdirs:
             self.interface.show_directory_list(subdirs)
@@ -315,40 +315,22 @@ Shortcuts:
         self.refresh_display()
         return True
     
-    def handle_directory_selection(self, key: str):
-        """处理目录选择"""
-        subdirs = self.file_browser.get_subdirectories()
-        if subdirs and key.isdigit():
-            index = int(key) - 1
-            if 0 <= index < len(subdirs):
-                if self.file_browser.enter_subdirectory(subdirs[index]):
-                    self.refresh_display()
-        return True
     
-    def move_up_in_list(self):
-        """在文件列表中向上移动"""
-        # 这里可以实现文件列表的选择逻辑
-        return True
-    
-    def move_down_in_list(self):
-        """在文件列表中向下移动"""
-        # 这里可以实现文件列表的选择逻辑
-        return True
     
     def refresh(self):
-        """刷新"""
+        """Refresh"""
         self.file_browser.refresh_file_list()
         self.refresh_display()
         return True
     
     def quit(self):
-        """退出"""
+        """Quit"""
         self.input_handler.stop()
         return True
 
 
 def main():
-    """主函数"""
+    """Main function"""
     import argparse
     
     parser = argparse.ArgumentParser(
@@ -378,20 +360,20 @@ Shortcuts:
     
     args = parser.parse_args()
     
-    # 检查chafa是否可用
+    # Check if chafa is available
     from chafa_wrapper import ChafaWrapper
     if not ChafaWrapper.check_chafa_available():
         print(ERR_CHAFA_NOT_FOUND)
         print(ERR_CHAFA_INSTALL_HINT)
         sys.exit(1)
     
-    # 启动应用
+    # Start application
     path = args.path if args.path else '.'
     app = PixelTerm(path, preload_enabled=args.preload_enabled)
     try:
         app.run()
     finally:
-        # 清理资源
+        # Clean up resources
         app.file_browser.cleanup()
 
 
