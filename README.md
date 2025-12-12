@@ -48,6 +48,12 @@ python pixelterm.py
 # Browse images in specified directory
 python pixelterm.py /path/to/images
 
+# Display specific image
+python pixelterm.py image.jpg
+
+# Disable preloading for faster startup
+python pixelterm.py --no-preload
+
 # Or run directly
 ./pixelterm.py /path/to/images
 ```
@@ -58,6 +64,8 @@ python pixelterm.py /path/to/images
 |-----|----------|
 | ←/→ | Previous/Next image |
 | a/d | Alternative left/right keys (compatibility mode) |
+| i   | Show/hide image information |
+| r   | Delete current image |
 | q   | Exit program |
 | Ctrl+C | Force exit |
 
@@ -86,6 +94,9 @@ python pixelterm.py /path/to/images
 - **Memory Cache** - Preloads image list to avoid repeated scanning
 - **Stream Processing** - Efficient key sequence processing
 - **Fast Response** - Optimized input processing logic
+- **Preloading Feature** - Optional image preloading for better browsing experience (can be disabled with --no-preload)
+- **Configuration System** - Supports custom configuration files `~/.pixelterm/config.json` with configurable display settings, chafa parameters, interface options and navigation settings
+- **Image Management** - Press 'i' to show detailed image information, press 'r' to delete current image (with confirmation prompt), supports JPG, PNG, GIF, BMP, WebP, TIFF and other mainstream formats
 
 ## 🔧 Technical Implementation
 
@@ -96,6 +107,9 @@ PixelTerm/
 ├── 📁 File Browser (file_browser.py)  
 ├── 🎮️ User Interface (interface.py)
 ├── ⚙️ Configuration (config.py)
+├── 🔧 Chafa Wrapper (chafa_wrapper.py)
+├── ❌ Exception Handling (exceptions.py)
+├── 🔢 Constants (constants.py)
 └── 🚀 Main Program (pixelterm.py)
 ```
 
@@ -104,14 +118,20 @@ PixelTerm/
 - **Buffer Management** - Intelligently accumulates and processes key input
 - **Protocol Auto Selection** - Selects optimal display method based on terminal capabilities
 - **State Synchronization** - Real-time synchronization between file list and display state
+- **Configuration System** - Supports user custom configuration files (~/.pixelterm/config.json)
+- **Exception Handling** - Comprehensive error handling and user prompts
+- **File Management** - Supports image deletion and file operations
 
 ## 📦 Project Information
 
 - **Language**: Python 3.7+
 - **Core Dependencies**: chafa, Pillow
-- **Code Scale**: 14 files, 1000+ lines of code
+- **Code Scale**: Multiple modules with structured design
 - **License**: LGPL-3.0 or later
 - **Repository**: https://github.com/zouyonghe/PixelTerm
+- **Installation**: 
+  - Via pip: `pip install pixelterm`
+  - From source: `git clone https://github.com/zouyonghe/PixelTerm && cd PixelTerm && pip install -e .`
 
 ## 🎯 Design Philosophy
 
@@ -119,6 +139,16 @@ PixelTerm/
 - **User Friendly** - Intuitive operation with no learning curve
 - **Performance First** - Fast response and smooth experience
 - **Strong Compatibility** - Support for various terminal environments
+
+## 🔧 Usage Tips
+
+**Common Issues**:
+- "chafa command not found": Install system chafa library (Ubuntu: `sudo apt-get install chafa`, Arch: `sudo pacman -S chafa`, macOS: `brew install chafa`)
+- Image display is not clear: Adjust terminal window size for optimal display protocol selection
+- Some keys don't respond: Try alternative keys (a/d instead of arrow keys)
+- Slow startup: Use `--no-preload` parameter to disable preloading feature
+
+**Configuration**: Create `~/.pixelterm/config.json` to customize display settings, interface options and navigation parameters
 
 ## 📄 License
 

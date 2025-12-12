@@ -48,6 +48,12 @@ python pixelterm.py
 # 浏览指定目录的图片
 python pixelterm.py /path/to/images
 
+# 显示指定图片
+python pixelterm.py image.jpg
+
+# 禁用预加载功能（更快启动）
+python pixelterm.py --no-preload
+
 # 或者直接运行
 ./pixelterm.py /path/to/images
 ```
@@ -58,7 +64,9 @@ python pixelterm.py /path/to/images
 |------|------|
 | ←/→ | 上一张/下一张图片 |
 | a/d  | 备用左/右键（兼容模式）|
-| q   | 退出程序 |
+| i    | 显示/隐藏图片信息 |
+| r    | 删除当前图片 |
+| q    | 退出程序 |
 | Ctrl+C | 强制退出 |
 
 ## 📁 目录导航
@@ -86,6 +94,9 @@ python pixelterm.py /path/to/images
 - **内存缓存** - 图片列表预加载，避免重复扫描
 - **流式处理** - 高效的按键序列处理
 - **快速响应** - 优化的输入处理逻辑
+- **预加载功能** - 可选的图片预加载，提升浏览体验（可用--no-preload禁用）
+- **配置系统** - 支持自定义配置文件 `~/.pixelterm/config.json`，可配置缩放比例、显示参数、界面选项和导航设置
+- **图片管理** - 按i键显示图片详细信息，按r键删除当前图片（带确认提示），支持JPG、PNG、GIF、BMP、WebP、TIFF等主流格式
 
 ## 🔧 技术实现
 
@@ -96,6 +107,9 @@ PixelTerm/
 ├── 📁 文件浏览 (file_browser.py)  
 ├── 🎮️ 用户界面 (interface.py)
 ├── ⚙️ 配置管理 (config.py)
+├── 🔧 Chafa封装 (chafa_wrapper.py)
+├── ❌ 异常处理 (exceptions.py)
+├── 🔢 常量定义 (constants.py)
 └── 🚀 主程序 (pixelterm.py)
 ```
 
@@ -104,14 +118,20 @@ PixelTerm/
 - **缓冲区管理** - 智能积累和处理按键输入
 - **协议自动选择** - 根据终端能力选择最佳显示方式
 - **状态同步** - 文件列表与显示状态实时同步
+- **配置系统** - 支持用户自定义配置文件 (~/.pixelterm/config.json)
+- **异常处理** - 完善的错误处理和用户提示
+- **文件管理** - 支持图片删除和文件操作
 
 ## 📦 项目信息
 
 - **开发语言**: Python 3.7+
 - **核心依赖**: chafa, Pillow
-- **代码规模**: 14个文件，1000+行代码
+- **代码规模**: 多个模块，结构化设计
 - **开源协议**: LGPL-3.0 或更高版本
 - **仓库地址**: https://github.com/zouyonghe/PixelTerm
+- **安装方式**: 
+  - 通过pip: `pip install pixelterm`
+  - 从源码: `git clone https://github.com/zouyonghe/PixelTerm && cd PixelTerm && pip install -e .`
 
 ## 🎯 设计理念
 
@@ -119,6 +139,16 @@ PixelTerm/
 - **用户友好** - 直观的操作方式，无学习成本
 - **性能优先** - 快速响应，流畅体验
 - **兼容性强** - 支持多种终端环境
+
+## 🔧 使用提示
+
+**常见问题**:
+- 提示"chafa command not found": 需先安装系统chafa库（Ubuntu: `sudo apt-get install chafa`, Arch: `sudo pacman -S chafa`, macOS: `brew install chafa`）
+- 图片显示不清晰: 调整终端窗口大小，程序会自动选择最佳显示协议
+- 某些按键不响应: 尝试使用备用按键（a/d代替左右箭头）
+- 启动速度慢: 使用`--no-preload`参数禁用预加载功能
+
+**配置文件**: 可创建`~/.pixelterm/config.json`自定义显示设置、界面选项和导航参数
 
 ## 📄 许可证
 
