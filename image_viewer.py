@@ -91,6 +91,42 @@ class ImageViewer:
         # 立即刷新输出，确保清屏命令立即生效
         sys.stdout.flush()
     
+    def display_filename(self, filepath: str):
+        """在图片下方中心显示文件名"""
+        try:
+            # 获取终端宽度
+            term_width, _ = self.get_terminal_size()
+            
+            # 获取文件名（不含路径）
+            filename = Path(filepath).name
+            
+            # 计算居中位置
+            filename_len = len(filename)
+            if filename_len < term_width:
+                # 计算左边距以居中显示
+                left_padding = (term_width - filename_len) // 2
+                centered_filename = ' ' * left_padding + filename
+            else:
+                # 如果文件名太长，截断并添加省略号
+                max_len = term_width - 3  # 留出省略号的空间
+                if max_len > 0:
+                    centered_filename = filename[:max_len] + '...'
+                else:
+                    centered_filename = '...'
+            
+            # 移动到终端底部（倒数第二行）
+            print(f'\033[{self.get_terminal_size()[1]-1};1H', end='')
+            
+            # 清除该行并显示文件名
+            print('\033[K', end='')  # 清除当前行
+            print(f'\033[36m{centered_filename}\033[0m', end='')  # 使用青色显示文件名
+            
+            # 立即刷新输出
+            sys.stdout.flush()
+        except Exception:
+            # 如果显示文件名失败，静默忽略
+            pass
+    
     def display_image_with_info(self, filepath: str, scale: float = 1.0, clear_first: bool = True, file_browser=None) -> bool:
         """显示图片"""
         if clear_first:
@@ -100,6 +136,10 @@ class ImageViewer:
         
         # 显示图片
         result = self.display_image(filepath, scale, file_browser)
+        
+        # 在图片下方中心显示文件名
+        if result:
+            self.display_filename(filepath)
         
         # 显示结束后显示光标
         print('\033[?25h', end='', flush=True)  # 显示光标
