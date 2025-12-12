@@ -21,19 +21,19 @@ class Interface:
 🖼️  PixelTerm - 终端图片浏览器
 
 📋 快捷键:
-  ←/→     上一张/下一张图片
-  ↑/↓     选择文件
-  Enter   打开选中的文件
-  +/-     放大/缩小
-  r       重置缩放
-  h/?     显示帮助
-  q       退出
-  u       返回上级目录
-  d       显示目录列表
+  ←/→     Previous/Next image
+  ↑/↓     Select file
+  Enter   Open selected file
+  +/-     Zoom in/out
+  r       Reset zoom
+  h/?     Show help
+  q       Quit
+  u       Go up directory
+  d       Show directory list
   
-📁 目录导航:
-  使用 d 查看子目录，然后输入目录名进入
-  使用 u 返回上级目录
+📁 Directory Navigation:
+  Use d to view subdirectories, then enter directory name
+  Use u to go up to parent directory
         """
     
     def setup_terminal(self):
