@@ -1,23 +1,23 @@
-# PixelTerm - 终端图片浏览器
+# PixelTerm - Terminal Image Viewer
 
-一个基于chafa的现代化终端图片浏览器，支持在终端中浏览和查看图片。
+A modern terminal image viewer based on chafa, allowing you to browse and view images directly in your terminal.
 
-## 🌟 功能特性
+## 🌟 Features
 
-- 🖼️ **多格式支持** - 支持JPG、PNG、GIF、BMP、WebP、TIFF等主流图片格式
-- 📁 **智能浏览** - 自动检测目录中的图片文件，支持目录导航
-- ⌨️ **键盘导航** - 左右键切换图片，支持多种终端环境
-- 📏 **自适应显示** - 自动适配终端大小变化
-- 🎨️ **极简界面** - 无冗余信息，专注图片浏览体验
-- ⚡️ **高分辨率** - 自动选择最佳显示协议，支持sixel/iterm/kitty等
-- 🔄 **自动刷新** - 终端大小改变时自动重新绘制
+- 🖼️ **Multi-format Support** - Supports JPG, PNG, GIF, BMP, WebP, TIFF and other mainstream image formats
+- 📁 **Smart Browsing** - Automatically detects image files in directories with directory navigation support
+- ⌨️ **Keyboard Navigation** - Switch between images with arrow keys, supporting various terminal environments
+- 📏 **Adaptive Display** - Automatically adapts to terminal size changes
+- 🎨️ **Minimal Interface** - No redundant information, focused on image browsing experience
+- ⚡️ **High Resolution** - Automatically selects optimal display protocols, supporting sixel/iterm/kitty and more
+- 🔄 **Auto Refresh** - Automatically redraws when terminal size changes
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
-# 1. 安装系统chafa库 (必须)
+# 1. Install system chafa library (required)
 # Arch Linux
 sudo pacman -S chafa
 
@@ -27,99 +27,103 @@ sudo apt-get install chafa
 # macOS
 brew install chafa
 
-# 2. 安装Python依赖
+# 2. Install Python dependencies
 pip install -r requirements.txt
 ```
 
-**依赖说明**:
-- **系统chafa**: 必须先安装系统的chafa库，这是核心依赖
-- **Python依赖**: 通过requirements.txt安装Pillow和chafa.py等Python包
+**Dependency Notes**:
+- **System chafa**: Must install the system chafa library first, this is the core dependency
+- **Python dependencies**: Install Pillow, chafa.py and other Python packages via requirements.txt
 
-### 基本使用
+### Basic Usage
 
 ```bash
-# 浏览当前目录的图片
+# Browse images in current directory
 python pixelterm.py
 
-# 浏览指定目录的图片
+# Browse images in specified directory
 python pixelterm.py /path/to/images
 
-# 或者直接运行
+# Or run directly
 ./pixelterm.py /path/to/images
 ```
 
-## 🎮 控制说明
+## 🎮 Controls
 
-| 按键 | 功能 |
-|------|------|
-| ←/→ | 上一张/下一张图片 |
-| a/d  | 备用左/右键（兼容模式）|
-| q   | 退出程序 |
-| Ctrl+C | 强制退出 |
+| Key | Function |
+|-----|----------|
+| ←/→ | Previous/Next image |
+| a/d | Alternative left/right keys (compatibility mode) |
+| q   | Exit program |
+| Ctrl+C | Force exit |
 
-## 📁 目录导航
+## 📁 Directory Navigation
 
-- **自动扫描** - 启动时自动扫描当前目录的所有图片文件
-- **智能排序** - 按文件名排序，便于浏览
-- **循环切换** - 到达最后一张后自动回到第一张
-- **文件支持** - 支持直接指定图片文件或目录
+- **Auto Scan** - Automatically scans all image files in current directory on startup
+- **Smart Sorting** - Sorts by filename for easy browsing
+- **Loop Navigation** - Automatically returns to first image after reaching the last one
+- **File Support** - Supports specifying image files or directories directly
 
-## ⚙️ 高级特性
+## ⚙️ Advanced Features
 
-### 显示协议支持
-- **自动检测** - 自动选择最佳显示协议：
-  - iTerm2/iTerm3 (最高分辨率)
-  - Kitty (高分辨率)
-  - Sixels (中等分辨率)  
-  - Symbols (通用兼容)
+### Display Protocol Support
+- **Auto Detection** - Automatically selects optimal display protocol:
+  - iTerm2/iTerm3 (highest resolution)
+  - Kitty (high resolution)
+  - Sixels (medium resolution)  
+  - Symbols (universal compatibility)
 
-### 终端适配
-- **实时响应** - 终端窗口大小改变时自动重绘
-- **尺寸优化** - 智能计算最佳显示尺寸
-- **光标管理** - 浏览时隐藏光标，退出时恢复
+### Terminal Adaptation
+- **Real-time Response** - Automatically redraws when terminal window size changes
+- **Size Optimization** - Intelligently calculates optimal display size
+- **Cursor Management** - Hides cursor during browsing, restores on exit
 
-### 性能优化
-- **内存缓存** - 图片列表预加载，避免重复扫描
-- **流式处理** - 高效的按键序列处理
-- **快速响应** - 优化的输入处理逻辑
+### Performance Optimization
+- **Memory Cache** - Preloads image list to avoid repeated scanning
+- **Stream Processing** - Efficient key sequence processing
+- **Fast Response** - Optimized input processing logic
 
-## 🔧 技术实现
+## 🔧 Technical Implementation
 
-### 核心架构
+### Core Architecture
 ```
 PixelTerm/
-├── 🖼️ 图片显示 (image_viewer.py)
-├── 📁 文件浏览 (file_browser.py)  
-├── 🎮️ 用户界面 (interface.py)
-├── ⚙️ 配置管理 (config.py)
-└── 🚀 主程序 (pixelterm.py)
+├── 🖼️ Image Display (image_viewer.py)
+├── 📁 File Browser (file_browser.py)  
+├── 🎮️ User Interface (interface.py)
+├── ⚙️ Configuration (config.py)
+└── 🚀 Main Program (pixelterm.py)
 ```
 
-### 关键技术
-- **ESC键序列处理** - 正确组合终端箭头键序列
-- **缓冲区管理** - 智能积累和处理按键输入
-- **协议自动选择** - 根据终端能力选择最佳显示方式
-- **状态同步** - 文件列表与显示状态实时同步
+### Key Technologies
+- **ESC Key Sequence Processing** - Correctly combines terminal arrow key sequences
+- **Buffer Management** - Intelligently accumulates and processes key input
+- **Protocol Auto Selection** - Selects optimal display method based on terminal capabilities
+- **State Synchronization** - Real-time synchronization between file list and display state
 
-## 📦 项目信息
+## 📦 Project Information
 
-- **开发语言**: Python 3.7+
-- **核心依赖**: chafa, Pillow
-- **代码规模**: 14个文件，1000+行代码
-- **开源协议**: MIT License
-- **仓库地址**: https://github.com/zouyonghe/PixelTerm
+- **Language**: Python 3.7+
+- **Core Dependencies**: chafa, Pillow
+- **Code Scale**: 14 files, 1000+ lines of code
+- **License**: MIT License
+- **Repository**: https://github.com/zouyonghe/PixelTerm
 
-## 🎯 设计理念
+## 🎯 Design Philosophy
 
-- **极简主义** - 专注核心功能，去除冗余信息
-- **用户友好** - 直观的操作方式，无学习成本
-- **性能优先** - 快速响应，流畅体验
-- **兼容性强** - 支持多种终端环境
+- **Minimalism** - Focus on core functionality, remove redundant information
+- **User Friendly** - Intuitive operation with no learning curve
+- **Performance First** - Fast response and smooth experience
+- **Strong Compatibility** - Support for various terminal environments
 
-## 📄 许可证
+## 📄 License
 
-MIT License - 详见 LICENSE 文件
+MIT License - See LICENSE file for details
 
 ---
 
-**PixelTerm** - 让终端也能成为出色的图片浏览器！ 🖼️
+**PixelTerm** - Making terminals excellent image viewers! 🖼️
+
+---
+
+*English | [中文](README_zh.md)*
